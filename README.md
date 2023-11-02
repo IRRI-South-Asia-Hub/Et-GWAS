@@ -6,14 +6,51 @@ Et-GWAQS is an R package for assocaition study that combines extreme bulk poolin
 Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~30K SNPs.
 
-
 ## Installation
 Et-GWAS can be run locally with just one command in R software or RStudio:
 ```
-shiny::runGitHub("Et-GWAS", "IRRISouthAsiaHub")
-```
-After running the above code the required libraries including "shiny", "shinyjs", "shinythemes", "crayon", "ggplot2", "ggridges", "dplyr", "ggfortify", "ggpubr", "extrafont", "data.table", "CMplot", "foreach", "doParallel", "MASS", and "zip" will be automatically installed. 
 
+```
+## Requirements
+### Genome association analysis toolkits
+Et-GWAS requires some of major genome association tools. All these commonad line tools doesn't require separate installation. Download and keep them inside the softwares_external folder that is present with in the Et-GWAS R package. 
+
+General
+```
+sudo apt-get install unzip
+```
+1. PLINK1.
+```
+cd Et-GWAS/softwares_external
+wget https://zzz.bwh.harvard.edu/plink/dist/plink-1.07-x86_64.zip
+unzip plink-1.07-x86_64.zip
+rm -r plink-1.07-x86_64.zip
+```
+2. PLINK2
+```
+wget https://s3.amazonaws.com/plink2-assets/alpha5/plink2_linux_x86_64_20231030.zip
+unzip plink2_linux_x86_64_20231030.zip
+rm-r plink2_linux_x86_64_20231030.zip
+```
+3. Tassel-5 standalone
+```
+git clone https://bitbucket.org/tasseladmin/tassel-5-standalone.git
+```
+4. PopLDdecay
+```
+git clone https://github.com/hewm2008/PopLDdecay.git 
+cd PopLDdecay
+chmod 755 configure
+./configure
+make
+cd ../
+```
+
+### R packages for datahandling and visualization
+
+After running the above code, the required libraries including "shiny", "shinyjs", "shinythemes", "crayon", "ggplot2", "ggridges", "dplyr", "ggfortify", "ggpubr", "extrafont", "data.table", "CMplot", "foreach", "doParallel", "MASS", and "zip" will be automatically installed. 
+
+## Genotypic data
 The genotypic data can be downloaded from the International Rice Informatics Consortium’s (IRIC) SNP-seek database (https://snp-seek.irri.org/_download.zul). There is a 1M GWAS SNP dataset.
 
 ## Introduction to method
