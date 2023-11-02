@@ -1,15 +1,3 @@
-# Load the required packages if not installed
-    packages = c("shiny","shinyjs","shinythemes","crayon","ggplot2","ggridges",
-"dplyr","ggfortify","ggpubr","extrafont","data.table","CMplot",
-"foreach","doParallel","MASS","zip")
-    package.check <- lapply(packages, FUN = function(x) {
-     if (!require(x, character.only = TRUE)) {
-        install.packages(x, dependencies = TRUE)
-        library(x, character.only = TRUE)
-      }
-   })
-
-# Load the required packages
 library(shiny)
 library(shinyjs)
 library(shinythemes)
@@ -26,10 +14,20 @@ library(foreach)
 library(doParallel)
 library(MASS)
 library(zip)
+library(tidyr)
+library(plyr)
+library(tidyverse)
+library(haplotypes)
+library(agricolae)
+library(readxl)
+library(RColorBrewer)
+
 
 #setwd("/srv/shiny-server/pooled-GWAS/")
 source("scirpts/theme_Publication.R")
 source("scirpts/association_main.R")
+#source("scirpts/haplo_pheno.R")
+
 #Function to extract the genomic data
 extract_irisID <- function(trait, infile, perc){
   
@@ -69,10 +67,10 @@ extract_irisID <- function(trait, infile, perc){
   
   # Step 2: genotypic data extract------------------------------------------------
   infam <- paste0(trait,"_geno")
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile data/filtered --keep ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile data/filtered --keep ",
                 trait,"_list.txt --noweb --make-bed --out ",infam))
   
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
                 infam," --noweb --recode --out ",infam))
   
   a <- read.delim(paste0(infam,".fam"), header = F,sep = "")
@@ -90,9 +88,9 @@ extract_irisID <- function(trait, infile, perc){
   
   write.table(out, file = paste0(infam,".fam"), col.names = F, row.names = F,
               quote = F, sep = " ")
-
-
-# pca_plink ---------------------------------------------------------------
+  
+  
+  # pca_plink ---------------------------------------------------------------
   pheno <- "data/IRIS_pop_all.txt"
   theme_cus <-theme(panel.background = element_blank(),panel.border=element_rect(fill=NA),
                     panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
@@ -111,10 +109,10 @@ extract_irisID <- function(trait, infile, perc){
   
   
   infam2 <- paste0(trait,"_geno2")
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile data/server2 --keep ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile data/server2 --keep ",
                 trait,"_list.txt --noweb --make-bed --out ",infam2))
   
-  system(paste0("/home/niranjani/Softwares/plink2 --bfile ",infam2,
+  system(paste0("softwares_external/plink2 --bfile ",infam2,
                 " --pca 5 --nonfounders --out ",infam,"-pc"))
   
   pca_plot <- paste0(trait,"_pca.png")
@@ -183,25 +181,25 @@ extract_irisID <- function(trait, infile, perc){
   ggsave(pov_plot, pov, width = 8, height = 6)
   
   #convert to ped/map and then to genotype file
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
                 infam2 ," --noweb --recode --out ",infam2))
   
-  system(paste0("perl /home/niranjani/Softwares/PopLDdecay/bin/mis/plink2genotype.pl -inPED ",
+  system(paste0("perl softwares_external/PopLDdecay/bin/mis/plink2genotype.pl -inPED ",
                 infam2,".ped -inMAP ",infam2,".map -outGenotype ", infam2,".genotype"))
   
   #LD calculation
-  system(paste0("/home/niranjani/Softwares/PopLDdecay/bin/PopLDdecay -InGenotype ",
-                 infam2,".genotype -OutStat ", infam2,"_LDdecay"))
-   
+  system(paste0("softwares_external/PopLDdecay/bin/PopLDdecay -InGenotype ",
+                infam2,".genotype -OutStat ", infam2,"_LDdecay"))
+  
   # #LD plot
-  system(paste0("perl /home/niranjani/Softwares/PopLDdecay/bin/Plot_OnePop.pl -inFile ",
-                 infam2,"_LDdecay.stat.gz -output ",trait,"_ldplot"))
-
-# pheno_dist_xp -----------------------------------------------------------
+  system(paste0("perl softwares_external/PopLDdecay/bin/Plot_OnePop.pl -inFile ",
+                infam2,"_LDdecay.stat.gz -output ",trait,"_ldplot"))
+  
+  # pheno_dist_xp -----------------------------------------------------------
   cat(green("Pheno_dist\n"))
   
   popfile <- "data/IRIS_pop_all.txt"
-    
+  
   Type <- c("indx","ind2","aus","ind1B","ind1A",
             "ind3","japx","temp","trop","subtrop","admix","aro")
   
@@ -292,8 +290,8 @@ extract_irisID <- function(trait, infile, perc){
   
   cat(green("Completed the pheno analysis\n"))
   
-
-# Pooling genotype --------------------------------------------------------
+  
+  # Pooling genotype --------------------------------------------------------
   infam <- paste0(trait,"_geno")
   hmpfile <- paste0(infam,".hmp.txt")
   
@@ -305,11 +303,11 @@ extract_irisID <- function(trait, infile, perc){
   rand_out <- paste0(trait,"_rand",perc)
   high_out <- paste0(trait,"_high",perc)
   
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
                 infam," --noweb --keep ",low_in," --recode --out ", low_out))
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
                 infam," --noweb --keep ",rand_in," --recode --out ",rand_out))
-  system(paste0("/home/niranjani/Softwares/plink-1.07-x86_64/./plink --bfile ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
                 infam," --noweb --keep ",high_in," --recode --out ",high_out))
   
   system(paste0("bash scirpts/fileconversion.sh -h ",hmpfile," -p ",
@@ -359,7 +357,7 @@ extract_irisID <- function(trait, infile, perc){
   cl<- detectCores()
   registerDoParallel(cl)
   result <- foreach (i=1:3) %dopar% {
-     pooling_snp(i)
+    pooling_snp(i)
   }
   stopImplicitCluster()
   
@@ -398,7 +396,7 @@ extract_irisID <- function(trait, infile, perc){
               quote = F)
   print("the input file has been created")
   
-# Association -------------------------------------------------------------
+  # Association -------------------------------------------------------------
   mapfile <- paste0(trait,"_geno.map")
   
   outfile <- paste(trait,"_pgwas_out",perc,".txt",sep = "")
@@ -428,98 +426,258 @@ extract_irisID <- function(trait, infile, perc){
     return(outqval)  
   }
   
-   qval <- xpgwas_modified(input, filter=50,  plotlambda=TRUE)
-   
-   b <- qval[,c(1:3,5)]
-   names(b) <- c("SNP","Chromosome","Position","trait1")
-   
-   CMplot(b,plot.type="m",threshold=c(0.01,0.05)/nrow(b),
-          threshold.col=c('red','orange'),
-          multracks=FALSE, chr.den.col=NULL, file.output=FALSE)
-   
-   write.table(qval, file = outfile, col.names = T, row.names = F, 
-               quote = F,sep = "\t")
+  qval <- xpgwas_modified(input, filter=50,  plotlambda=TRUE)
   
-
-   #xpplot_mine
-   
-   # Findign significant snps ------------------------------------------------
-   suggestiveline = -log10(5e-05)
-   genomewideline = -log10(5e-08)
+  b <- qval[,c(1:3,5)]
+  names(b) <- c("SNP","Chromosome","Position","trait1")
   
-   qval$log10p <- -log10(qval$pval)
-   SNPset <- qval
-   qtltable <- SNPset[SNPset$log10p >= suggestiveline,]
-   write.table(qtltable$snpid, file = outsnps, col.names = F, row.names = F, 
-               quote = F, sep = "\t")
+  CMplot(b,plot.type="m",threshold=c(0.01,0.05)/nrow(b),
+         threshold.col=c('red','orange'),
+         multracks=FALSE, chr.den.col=NULL, file.output=FALSE)
+  
+  write.table(qval, file = outfile, col.names = T, row.names = F, 
+              quote = F,sep = "\t")
   
   
-   qtltable <- SNPset %>% dplyr::mutate(passThresh = log10p >= suggestiveline) %>%
-     dplyr::group_by(chr, run = {
-       run = rle(passThresh)
-       rep(seq_along(run$lengths), run$lengths)
-     }) %>% dplyr::filter(passThresh == TRUE) %>% dplyr::ungroup()
+  #xpplot_mine
   
-   if(nrow(qtltable) > 0){
-     qtltable <- qtltable %>% dplyr::ungroup() %>% dplyr::group_by(chr) %>%
-       dplyr::group_by(chr, qtl = {
-         qtl = rep(seq_along(rle(run)$lengths), rle(run)$lengths)
-       }) %>% dplyr::select(-run) %>%
-       dplyr::summarize(start = min(pos), end = max(pos), length = end - start + 1,
-                        nSNPs = length(pos),
-                        avgSNPs_Mb = round(length(pos)/(max(pos) - min(pos)) * 1e+06),
-                        .groups = 'drop')
-   }
-   names(qtltable)[1] <- "CHR"
-   write.table(qtltable, file = outqtls, col.names = T, row.names = F, 
-               quote = F, sep = "\t")
-   print("everything is done")
-
+  # Findign significant snps ------------------------------------------------
+  suggestiveline = -log10(5e-05)
+  genomewideline = -log10(5e-08)
+  
+  qval$log10p <- -log10(qval$pval)
+  SNPset <- qval
+  qtltable <- SNPset[SNPset$log10p >= suggestiveline,]
+  write.table(qtltable$snpid, file = outsnps, col.names = F, row.names = F, 
+              quote = F, sep = "\t")
+  
+  
+  qtltable <- SNPset %>% dplyr::mutate(passThresh = log10p >= suggestiveline) %>%
+    dplyr::group_by(chr, run = {
+      run = rle(passThresh)
+      rep(seq_along(run$lengths), run$lengths)
+    }) %>% dplyr::filter(passThresh == TRUE) %>% dplyr::ungroup()
+  
+  if(nrow(qtltable) > 0){
+    qtltable <- qtltable %>% dplyr::ungroup() %>% dplyr::group_by(chr) %>%
+      dplyr::group_by(chr, qtl = {
+        qtl = rep(seq_along(rle(run)$lengths), rle(run)$lengths)
+      }) %>% dplyr::select(-run) %>%
+      dplyr::summarize(start = min(pos), end = max(pos), length = end - start + 1,
+                       nSNPs = length(pos),
+                       avgSNPs_Mb = round(length(pos)/(max(pos) - min(pos)) * 1e+06),
+                       .groups = 'drop')
+  }
+  names(qtltable)[1] <- "CHR"
+  write.table(qtltable, file = outqtls, col.names = T, row.names = F, 
+              quote = F, sep = "\t")
+  print("everything is done")
+  
   list(plot1 = box, plot2 = his,plot3 = ar, plot4 = pov, plot5 = dist,
        plot6 = dist2)
 }
 
+haplo_pheno <- function(can_genes, pheno, path){
+  
+  filenames <- read.csv(can_genes, header = F)
+  colnames(filenames) <- "V1"
+  #list.files(path = path, pattern = ".csv")
+  
+  #filenames <- gsub(".csv","",filenames)
+  print(head(filenames))
+  
+  pheno <- read_xlsx(pheno)
+  names(pheno) <- c("Designation","trait")
+  print(paste0("size:",nrow(filenames)))
+  
+  for (n  in c(1:nrow(filenames))) {
+    skip_to_next <<- FALSE
+    i <- filenames$V1[n]
+    print(i)
+    a <- read.csv(paste0(path,"/",i,".csv"), header = TRUE, stringsAsFactors = FALSE)
+    
+    dx <- paste0("Now running: ",i)
+    if(ncol(a) > 6) {
+      a <- data.frame(a [-c(2:2),-c(2:5)])
+      a[is.na(a)] <- "-"
+      b <- a %>% filter(across(everything(a), ~ !grepl("/",.)))
+      #extract----
+      lst <- data.frame(pheno$Designation)
+      bb <- merge(b, lst, by.x = "JAPONICA.NIPPONBARE.POSITIONS", by.y = "pheno.Designation")
+      b <- bb
+      #------------
+      c <- gsub(' ', '_', b$JAPONICA.NIPPONBARE.POSITIONS)
+      c <- cbind(c,b[,-c(1:1)])
+      c <-data.frame(c)
+      colnames(c)<-colnames(b)
+      d<- unite(c[,-c(1:1)], col = "seq", remove =  TRUE, sep = "", na.rm = TRUE)
+      e <- data.frame(cbind(c$JAPONICA.NIPPONBARE.POSITIONS,d$seq))
+      e<-e[!(str_count(e$X2) < 1),]
+      
+      dir.create(paste0(path,"/",i,""))
+      sink(file.path((paste0(path,"/",i,"")), "Sequence.fas"))
+      for (j in 1:nrow(e)){
+        name = paste0(">",e[j,1])
+        sequence = paste0(e[j,2])
+        cat(name,sep="\n")
+        cat(sequence,sep="\n")
+      }
+      sink()
+      x<- read.fas(file.path((paste0(path,"/",i,"")), "Sequence.fas"))
+      haplo<- haplotype(x)
+      haploy<- data.frame(haplo@sequence)
+      col <- dimnames(c [-c(1:1)])
+      colnames(haploy)<- col[[2]]
+      row<- paste("H",seq(1:nrow(haploy)) , sep = "")
+      row.names(haploy)<- row
+      haploy$counts <- haplo@freq
+      haploy$freq <- haplo@freq/nrow(e)
+      popul <- paste("pop", seq(1:haplo@nhap), sep = "")
+      par<-grouping(haplo, popul)
+      groups <- paste0("H",par[["hapvec"]])
+      variety<- data.frame(e [,1:1])
+      variety$group <- groups
+      var_pheno <- variety
+      colnames(var_pheno) <- c("Accession", "group")
+      genotype <- data.frame(rev((haploy))[-c(1:2)])
+      genotype <- data.frame(rev((genotype)))
+      variety<- merge(variety,c, by.x = 'e...1.1.',by.y = 'JAPONICA.NIPPONBARE.POSITIONS')
+      write.csv(haploy,file.path((paste0(path,"/",i,"")),file = "Haplotype.csv"), row.names = F)
+      write.csv(variety,file.path((paste0(path,"/",i,"")), file = "Variety.csv"), row.names = F)
+      write.table(genotype,file.path((paste0(path,"/",i,"")),file = "Flapjack.genotype"),sep="\t", quote = F)
+      var <- gsub('_', ' ', var_pheno$Accession)
+      var_pheno$names <- var
+      
+      haplopheno <- merge(var_pheno, pheno, by.x = 'names', by.y = 'Designation')
+      haplopheno$group<- as.factor(haplopheno$group)
+      haplopheno<-haplopheno[order(haplopheno$group),]
+      hp <- count(haplopheno$group)
+      hp <- hp[!(hp$freq <2),]
+      sd<- merge(hp,haplopheno, by.x = 'x', by.y = 'group')
+      sd<- sd  %>% dplyr::select(1, 5)
+      
+      colu<- colnames(sd)
+      colnames(sd)<- c("Haplotype",colu[2])
+      colu <- colnames(sd)
+      sink(file.path((paste0(path,"/",i,"")), "anova.txt"))
+      aooov<- aov(formula((paste0(colnames(sd)[2], "~", colnames(sd)[1]))), data = sd)
+      print(summary(aooov))
+      sink()
+      sink(file.path((paste0(path,"/",i,"")), "duncan.txt"))
+      tryCatch(print(duncan<- duncan.test(aooov,trt = "Haplotype",console = TRUE, group = T)), 
+               error = function(e) { skip_to_next <<- TRUE})
+      if(skip_to_next) { 
+        cat(red(paste0("There is error in: ",i,". so skipping to next")))
+        sink()
+      }
+      if(skip_to_next) { 
+        next 
+      }     
+      #print(duncan<- duncan.test(aooov,trt = "Haplotype",console = TRUE, group = T))
+      sink()
+      sink(file.path((paste0(path,"/",i,"")), "duncan_pval.txt"))
+      print(duncan.pval<- duncan.test(aooov,trt = "Haplotype",console = TRUE, group = F))
+      sink()
+      summary<- data.frame(duncan$means)
+      summary<- cbind(hp,summary)
+      
+      write.csv(summary,file.path((paste0(path,"/",i,"")),file = "summary.stat.csv"))
+      labels <- data.frame(duncan$groups)
+      labels$Haplotype<- row.names(labels)
+      labels<- labels[order(labels$Haplotype),]
+      specify<- cbind(hp,labels)
+      
+      specify2 <- specify
+      specify2$final <- paste0(specify2$x,"-", round(specify2[,3], digits=2),"(", specify2$groups,")")
+      write.csv(specify2,file.path((paste0(path,"/",i,"")),file =  "group.csv"))
+      
+      mycolors = c(brewer.pal(name="BuGn", n = 9), brewer.pal(name="OrRd", n = 9),brewer.pal(name = "YlOrBr", n=9),brewer.pal(name = "Pastel1",n=9))
+      jpeg(file.path((paste0(path,"/",i,"")), "boxplot.jpg"), height = 1200,width = 1400, res = 300)
+      p<-ggplot(sd, aes(x=Haplotype, y=sd[,2])) +labs(y=paste0(colnames(sd)[2]))+ geom_boxplot(aes(fill = factor(Haplotype)), show.legend = F)+scale_color_manual(values = mycolors, aesthetics = "fill")+ theme(axis.text.x = element_text(angle = 90, hjust= 1.0))
+      q<-p+geom_text(data = specify, aes(x,Inf, label= paste0("n=",freq,"\n",groups)), vjust = 1,size= 1.5)
+      r<- q+theme_bw()+theme(text = element_text(size=10, face="bold"),axis.text.x = element_text(angle = 90, hjust= 1.0))
+      s<- r + geom_jitter(shape=16, position=position_jitter(0.2), size = 0.5,color = "red")
+      t<- s+ggtitle(label = paste0(i,""))
+      print(s)
+      dev.off()
+      var_300 <- gsub('_', ' ', variety[,1])
+      variety_300 <- variety
+      variety_300$names <- var_300
+      
+      variety_300<- merge(variety_300, pheno, by.x = 'names', by.y = 'Designation')
+      variety_300<- variety_300[order (variety_300$group),]
+      write.csv(variety_300,file.path((paste0(path,"/",i,"")),file = "variety_300.csv"))
+      count <- count(haplopheno$group)
+      colnames(count)<- c("x", "count_300")
+      count$freq_3k <- count$count_300/nrow(e)
+      count$freq_300 <- count$count_300/nrow(haplopheno)
+      hap<- cbind(row.names(haploy), haploy)
+      haplotype_300<- merge(hap, count, by.x = 'row.names(haploy)', by.y = 'x' )
+      write.csv(haplotype_300,file.path((paste0(path,"/",i,"")),file = "haplotype_300.csv"))
+    }
+  }
+  
+  return(dx)
+}
 
-ui <- fluidPage(
-  theme = shinytheme("flatly"),
-  titlePanel("Et-GWAS"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput(inputId = "Bulk_size",
-                  label = "Bulk size:",
-                  choices = c("10", "15", "20")),
-      
-      textInput("Trait", "Trait" , "Ex: SPY "),
-      verbatimTextOutput("value"),
-      
-      fileInput("upload", "Phenotype"),
-      
-      actionButton("runButton", "Run"),
-      
-      downloadButton("downloadData", label = "Download"),
-      conditionalPanel(
-        condition = "input.runButton > 0",
-        p("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"),
-        p("Processing data"),
-        p("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"),
-        verbatimTextOutput("outputText")  # Display the output once processing is complete
-      )
-      
+ui = fluidPage(
+  tabsetPanel(
+    tabPanel("Map", fluid = TRUE,
+             sidebarLayout(
+               sidebarPanel(selectInput(inputId = "Bulk_size",
+                                        label = "Bulk size:",
+                                        choices = c("10", "15", "20")),
+                            
+                            textInput("Trait", "Trait" , "Ex: SPY "),
+                            verbatimTextOutput("value"),
+                            
+                            fileInput("upload", "Phenotype"),
+                            
+                            actionButton("runButton", "Run"),
+                            
+                            downloadButton("downloadData", label = "Download MTAs"),
+                            conditionalPanel(
+                              condition = "input.runButton > 0",
+                              p("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"),
+                              p("Association analysis started"),
+                              p("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"),
+                              verbatimTextOutput("progress_output")
+                            )
+               ),
+               mainPanel(
+                 tabsetPanel(
+                   tabPanel("Phenotype", plotOutput("plot1", width = "100%", 
+                                                    height = "300px"),
+                            plotOutput("plot2", width = "100%", height = "300px")),
+                   tabPanel("Population structure", plotOutput("plot3", width = "100%", 
+                                                               height = "300px"),
+                            plotOutput("plot4", width = "100%", height = "300px")),
+                   tabPanel("Phenotypic distribution", plotOutput("plot5", width = "100%", 
+                                                                  height = "300px"),
+                            plotOutput("plot6", width = "100%", height = "300px")),
+                   tabPanel("Association", plotOutput("plot7", width = "100%", 
+                                                      height = "300px"))),
+                 h6("Sample download", align = "center"),
+                 verbatimTextOutput("result_output")
+               )
+             )
     ),
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Phenotype", plotOutput("plot1", width = "100%", 
-                                               height = "300px"),
-                 plotOutput("plot2", width = "100%", height = "300px")),
-        tabPanel("Population structure", plotOutput("plot3", width = "100%", 
-                                                    height = "300px"),
-                 plotOutput("plot4", width = "100%", height = "300px")),
-        tabPanel("Phenotypic distribution", plotOutput("plot5", width = "100%", 
-                                                    height = "300px"),
-                 plotOutput("plot6", width = "100%", height = "300px")),
-        tabPanel("Association", plotOutput("plot7", width = "100%", 
-                                                       height = "300px"))),
-      h6("Sample download", align = "center")
+    tabPanel("Haplo-Pheno Analysis", fluid = TRUE,
+             sidebarLayout(
+               sidebarPanel(
+                 fileInput("upload2", "Phenotype"),
+                 fileInput("upload3", "Candidates"),
+                 textInput("input_path", "Enter a Path:", value = ""),
+                 actionButton("runHapPheno", "Submit"),
+                 
+                 downloadButton("downloadHaps", label = "Download Haps"),
+               ),
+               mainPanel(fluidRow(
+                 textOutput("Hap_progress"),
+                 textOutput("Hap_final")
+               )
+               )
+             )
     )
   )
 )
@@ -528,16 +686,16 @@ server <- function(input, output, session) {
   
   plotData <- reactiveVal(NULL)
   processingResult <- reactiveVal(NULL)
-
+  
   observeEvent(input$runButton, {
     
     processingResult(NULL)  
     system.time({
-    plotData(extract_irisID(input$Trait,input$upload$datapath, as.numeric(input$Bulk_size)))
+      plotData(extract_irisID(input$Trait,input$upload$datapath, as.numeric(input$Bulk_size)))
     })
     processingResult()
   })
-
+  
   output$resultText <- renderPrint({
     processingResult()
   })
@@ -593,6 +751,26 @@ server <- function(input, output, session) {
     },
     contentType = "application/zip"
   )
+  
+  #for the second panel
+  hapData <- reactiveVal(NULL)
+  running <- reactiveVal(FALSE)
+  
+  observeEvent(input$runHapPheno, {
+    running(TRUE)
+    hapData(haplo_pheno(input$upload3$datapath,input$upload2$datapath,
+                        input$input_path))
+  })
+  running(FALSE)
+  
+  observe({
+    if (running()) {
+      output$Hap_final <- renderText("Haplo Pheno Analysis done. You can stop the App")
+    } else {
+      output$Hap_final <- renderText("Analysis is still running...")
+    }
+  })
+
 }
 
 shinyApp(ui, server)
