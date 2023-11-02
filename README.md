@@ -13,15 +13,17 @@ Et-GWAS can be run locally with just one command in R software or RStudio:
 ```
 ## Requirements
 ### Genome association analysis toolkits
-Et-GWAS requires some of major genome association tools. All these commonad line tools doesn't require separate installation. Download and keep them inside the softwares_external folder that is present with in the Et-GWAS R package. 
+Et-GWAS requires some of major genome association tools. All these commonad line tools doesn't require separate installation. Download and keep them inside the softwares_external folder that is present with in the Et-GWAS R package. Carry out the commands continuously.
 
 General
 ```
 sudo apt-get install unzip
+cd Et-GWAS
+mkdir softwares_external
+cd softwares_external
 ```
 1. PLINK1.
 ```
-cd Et-GWAS/softwares_external
 wget https://zzz.bwh.harvard.edu/plink/dist/plink-1.07-x86_64.zip
 unzip plink-1.07-x86_64.zip
 rm -r plink-1.07-x86_64.zip
