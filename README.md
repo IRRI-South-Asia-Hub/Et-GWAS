@@ -3,7 +3,7 @@
 Et-GWAQS is an R package for assocaition study that combines extreme bulk pooling and allele frequency measurement to facilitate the detection of associations between genetic variants and target traits.
 
 ## Web tool
-Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
+This method is easy to use. Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~30K SNPs.
 
 ## Installation
@@ -26,7 +26,7 @@ cd Et-GWAS
 mkdir softwares_external
 cd softwares_external
 ```
-1. PLINK1.
+1. PLINK1.07
 ```
 wget https://zzz.bwh.harvard.edu/plink/dist/plink-1.07-x86_64.zip
 unzip plink-1.07-x86_64.zip
