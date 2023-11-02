@@ -7,9 +7,13 @@ Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~30K SNPs.
 
 ## Installation
-Et-GWAS can be run locally with just one command in R software or RStudio:
+Et-GWAS can be downloaded from the GitHub repository in different ways. User can directly unzip and start to use it.
 ```
-
+Using Git Clone
+gh repo clone IRRI-South-Asia-Hub/Et-GWAS
+(or)
+Using wget
+wget https://github.com/IRRI-South-Asia-Hub/Et-GWAS.git
 ```
 ## Requirements
 ### Genome association analysis toolkits
@@ -48,12 +52,25 @@ make
 cd ../
 ```
 
-### R packages for datahandling and visualization
-
-After running the above code, the required libraries including "shiny", "shinyjs", "shinythemes", "crayon", "ggplot2", "ggridges", "dplyr", "ggfortify", "ggpubr", "extrafont", "data.table", "CMplot", "foreach", "doParallel", "MASS", and "zip" will be automatically installed. 
-
 ## Genotypic data
-The genotypic data can be downloaded from the International Rice Informatics Consortium’s (IRIC) SNP-seek database (https://snp-seek.irri.org/_download.zul). There is a 1M GWAS SNP dataset.
+The package contains a default genotypic file that has low density variants (~30K). The genotypic data can be downloaded from the International Rice Informatics Consortium’s (IRIC) SNP-seek database (https://snp-seek.irri.org/_download.zul). There is a 1M GWAS SNP dataset. This can be done through following steps,
+Step 1:
+Download plink files (fam/bed/bim format) from the IRIC SNP-seek database
+```
+wget https://s3.amazonaws.com/3kricegenome/snpseek-dl/3krg-base-filt-core-v0.7/core_v0.7.bed.gz
+wget https://s3.amazonaws.com/3kricegenome/snpseek-dl/3krg-base-filt-core-v0.7/core_v0.7.bim.gz
+wget https://s3.amazonaws.com/3kricegenome/snpseek-dl/3krg-base-filt-core-v0.7/core_v0.7.fam.gz
+```
+Step 2:
+Unzip and move the files to Et-GWAS location
+```
+gzip -d core_v0.7.bed.gz
+gzip -d core_v0.7.bim.gz
+gzip -d core_v0.7.fam.gz
+mv core_v0.7.* path-to-Et-GWAS/Et-GWAS/data/
+```
+Step 3:
+Give the name of the new genotype file (without extension) in the interface. This is an optional step, so if the user is not specifing the new genotypic file the analysis will be carried out with the low density ~30K SNP dataset.
 
 ## Introduction to method
 The Et-GWAS method leverages historical recombination events within a diversity panel to identify rare, high-impact variants associated with the targeted traits. Inspired by the extreme-phenotype GWAS approach, it combines bulk segregant analysis with GWAS, treating the diversity panel as a segregating population. The method uses available genome sequence information to construct extreme pools and a random bulk, representing the genomic variation across the entire diversity panel. The contrasting germplasms are grouped, and allele frequencies are measured to facilitate the detection of marker-trait associations (MTAs). To illustrate the Et-GWAS, we presented a schematic representation in Figure 1, focusing on its application to yield under reproductive stage drought in rice. The analysis involves the following three key steps: 
