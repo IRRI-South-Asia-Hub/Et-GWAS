@@ -1,11 +1,10 @@
-# Et-GWAS
-
 Et-GWAS is an R package for assocaition study that combines extreme bulk pooling and allele frequency measurement to facilitate the detection of associations between genetic variants and target traits.
 
-## Web tool
+# Web tool
 This method is easy to use. Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~30K SNPs.
 
+# R package 
 ## Installation
 Et-GWAS can be downloaded from the GitHub repository in different ways. User can directly unzip and start to use it.
 Using Git Clone
