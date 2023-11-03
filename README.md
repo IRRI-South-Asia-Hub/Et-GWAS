@@ -115,11 +115,11 @@ Provide  the following information to run the Et-GWAS for your data.
 4. Provide phenotypic file
 5. Run
 
-![image](Rpackage_1.png)
+![image](extra/Rpackage_1.png)
 
 ## Step 2: Candidate genes and SNP sequence downloading
 User can extract the candidate genes according to the user's study. Based on the MTAs identified in Step 1, user can identify the candidate genes wither by considering the LD region or just the adjacent genes. These genes (MSU ID) can be used to extract the SNP sequences from SNP seek database (https://snp-seek.irri.org/) using our Haplo-Pheno python package. This script is available at the Python package Index (https://pypi.org/project/Sudip-snpdw/).
 
 ## Step 3: Haplo-Pheno Analysis
 The candidate gene list and the corresponding SNP sequence should be put in one folder. This information can be again directly used as input for the Haplo-Pheno analysis in the same R package (second tab). After the completion, for each locus (gene) a folder will be generated with all the haplotypes present in the gene and their corresponding phenotypic performance. Based on the performance of these haplotypes, user can idenfity the best performing haplotype by viewing boxplot.jpg and summary.stat.csv file.
-![image](Rpackage2.png)
+![image](extra/Rpackage2.png)
