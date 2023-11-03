@@ -67,7 +67,7 @@ extract_irisID <- function(trait, infile, perc){
   
   # Step 2: genotypic data extract------------------------------------------------
   infam <- paste0(trait,"_geno")
-  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile data/filtered --keep ",
+  system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile data/server2 --keep ",
                 trait,"_list.txt --noweb --make-bed --out ",infam))
   
   system(paste0("softwares_external/plink-1.07-x86_64/./plink --bfile ",
