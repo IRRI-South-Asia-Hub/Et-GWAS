@@ -1,3 +1,4 @@
+#!/bin/bash
 #~~~~~~~~~~ Step 1: Clustering using admixture
 cluster_admixture() {
 
