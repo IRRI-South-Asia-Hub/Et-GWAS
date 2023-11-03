@@ -80,11 +80,11 @@ This is still a ShinyApp package hence, the users can easily run it with out any
 ## Preparation of Phenotypic data
 Basic normalization steps are required to prepare the phenotypic trait values. Make sure the genotype of the samples are given in IRIS IDs in the format "IRIS_313-#NO". Please check the demo.csv file inorder to prepare the phenotypic file.
 
-IRIS.ID | Trait |
---- | --- | --- |
-IRIS_313-10007 | 7 | 
-IRIS_313-10040 | 12.8 | 
-IRIS_313-10380 | 5.6 | 
+IRIS.ID | Trait 
+--- | --- | --- 
+IRIS_313-10007 | 7 
+IRIS_313-10040 | 12.8
+IRIS_313-10380 | 5.6
 
 ## Downloading Genotypic data (optional)
 The package contains a default genotypic file that has low density variants (~30K). The genotypic data can be downloaded from the International Rice Informatics Consortium’s (IRIC) SNP-seek database (https://snp-seek.irri.org/_download.zul). There is a 1M GWAS SNP dataset. This can be done through following steps,
