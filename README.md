@@ -80,11 +80,11 @@ This is still a ShinyApp package hence, the users can easily run it with out any
 ## Preparation of Phenotypic data
 Basic normalization steps are required to prepare the phenotypic trait values. Make sure the genotype of the samples are given in IRIS IDs in the format "IRIS_313-#NO". Please check the demo.csv file inorder to prepare the phenotypic file.
 
-| IRIS.ID        | Trait           | Cool  |
-| ------------- |:-------------:| -----:|
-| IRIS_313-10007 | 7 | $1600 |
-| IRIS_313-10040    | 12.8      |   $12 |
-| IRIS_313-10380 | 5.6      |    $1 |
+| IRIS.ID        | Trait           |
+| ------------- |:-------------:|
+| IRIS_313-10007 | 7 |
+| IRIS_313-10040    | 12.8 |
+| IRIS_313-10380 | 5.6 |
 
 
 ## Downloading Genotypic data (optional)
