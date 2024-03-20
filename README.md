@@ -14,13 +14,28 @@ Figure 1 The schematic representation of the Et-GWAS pipeline: The workflow cons
 # Web tool
 This method is easy to use. Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~1K SNPs.
+
 # Graphical user interphase of Et-GWAS for Windows
 The Et-GWAS application is user-friendly and requires no prior knowledge of R programming. It operates through a graphical user interface (GUI) that guides users through the process. To begin, users input the desired bulk size, trait name, and phenotypic file on the starting page of the application. Comprehensive instructions regarding data formatting can be found in the documentation below. Since the webserver runs with very low density SNP set, the users can upgrate to the "Functional SNP set" for the analysis. This SNP set contains ~30K SNPs from exonic region with effects on the protein structure.
 
-Users can run the app locally through the code “shiny::runGitHub(“Et-GWAS_Windows”, “IRRISouthAsiaHub”)”  in RStudio.
+Users can run the app locally through two step process:
+## Step 1: Installation
+The GUI was prepared using Shiny,an open source r package (https://www.rstudio.com/products/shiny/). And so the user needs to install the r package "shiny" in their RStrudio to start the program.
+
+```
+install.packages("shiny")
+```
+The application requires few more r packages to be installed and they have all been added in the main program. So it will automatically be installed when you run the program. Hence, the user needs to be connected to the internet when they run the program for first time.
+
+## Step 2: Downloading and running the application
+The Et-GWAS windows version is present in the GitHub as a separate repository. And it can be downloaded and run through the following command
+
+```
+shiny::runGitHub(“Et-GWAS_Windows”, “IRRISouthAsiaHub”)”  in RStudio.
+```
 
 # Graphical user interphase and stand-alone package of Et-GWAS 
-The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code “shiny::runGitHub(“Et-GWAS”, “IRRISouthAsiaHub”)”  in RStudio. This allows for a broader marker range, enhancing the precision and scope of trait discovery and association analysis. For smooth run, it requires a workstation with the memory of 64 GB or above and a CPU speed of 3.0GHz or above.
+The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code “shiny::runGitHub(“Et-GWAS”, “IRRI-South-Asia-Hub”)”  in RStudio. This allows for a broader marker range, enhancing the precision and scope of trait discovery and association analysis. For smooth run, it requires a workstation with the memory of 64 GB or above and a CPU speed of 3.0GHz or above.
 ![image](extra/fig2.png)
 
 Figure 2 Main interface of the Et-GWAS application. Screenshots of panels for the main tabs are shown. (a) The “Phenotype” tab displays the phenotypic distribution of the given panel. (b) The “Population structure” tab allows users to visualize the subpopulation structure of the panel. By default 3 principal components are calculated. (c) The “Phenotypic distribution” tab allows users to visualize the phenotypic distribution in each bulk. The users have the flexibility to choose the bulk size according to their panel size. (d) The “Association” tab generates Manhattan plot with two significant values (10-4 & 10-6). Rest of the plots and tables will be generated and kept in a zip file which users can download using the right panel “Download” button at the end of the analysis.
