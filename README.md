@@ -31,11 +31,16 @@ The application requires few more r packages to be installed and they have all b
 The Et-GWAS windows version is present in the GitHub as a separate repository. And it can be downloaded and run through the following command
 
 ```
-shiny::runGitHub(“Et-GWAS_Windows”, “IRRISouthAsiaHub”)”  in RStudio.
+shiny::runGitHub("Et-GWAS_Windows", "IRRISouthAsiaHub")
 ```
 
 # Graphical user interphase and stand-alone package of Et-GWAS 
-The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code “shiny::runGitHub(“Et-GWAS”, “IRRI-South-Asia-Hub”)”  in RStudio. This allows for a broader marker range, enhancing the precision and scope of trait discovery and association analysis. For smooth run, it requires a workstation with the memory of 64 GB or above and a CPU speed of 3.0GHz or above.
+The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code in RStudio. 
+
+```
+shiny::runGitHub("Et-GWAS", "IRRI-South-Asia-Hub")
+```
+This allows for a broader marker range, enhancing the precision and scope of trait discovery and association analysis. For smooth run, it requires a workstation with the memory of 64 GB or above and a CPU speed of 3.0GHz or above.
 ![image](extra/fig2.png)
 
 Figure 2 Main interface of the Et-GWAS application. Screenshots of panels for the main tabs are shown. (a) The “Phenotype” tab displays the phenotypic distribution of the given panel. (b) The “Population structure” tab allows users to visualize the subpopulation structure of the panel. By default 3 principal components are calculated. (c) The “Phenotypic distribution” tab allows users to visualize the phenotypic distribution in each bulk. The users have the flexibility to choose the bulk size according to their panel size. (d) The “Association” tab generates Manhattan plot with two significant values (10-4 & 10-6). Rest of the plots and tables will be generated and kept in a zip file which users can download using the right panel “Download” button at the end of the analysis.
