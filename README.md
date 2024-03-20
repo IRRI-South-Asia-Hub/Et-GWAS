@@ -15,7 +15,7 @@ Figure 1 The schematic representation of the Et-GWAS pipeline: The workflow cons
 This method is easy to use. Et-GWAS is hosted by a Shiny web server at https://et-gwas.shinyapps.io/Et-GWAS/
 This can be utilized for easier and quiker associotion analysis since it utilizes the low density genotypic data with ~1K SNPs.
 
-# Graphical user interphase of Et-GWAS for Windows
+# For Windows
 The Et-GWAS application is user-friendly and requires no prior knowledge of R programming. It operates through a graphical user interface (GUI) that guides users through the process. To begin, users input the desired bulk size, trait name, and phenotypic file on the starting page of the application. Comprehensive instructions regarding data formatting can be found in the documentation below. Since the webserver runs with very low density SNP set, the users can upgrate to the "Functional SNP set" for the analysis. This SNP set contains ~30K SNPs from exonic region with effects on the protein structure.
 
 Users can run the app locally through two step process:
@@ -34,9 +34,14 @@ The Et-GWAS windows version is present in the GitHub as a separate repository. A
 shiny::runGitHub("Et-GWAS_Windows", "IRRI-South-Asia-Hub")
 ```
 
-# Graphical user interphase and stand-alone package of Et-GWAS 
-The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code in RStudio. 
-
+# For Ubuntu
+The functionality of the pipeline and test results are displayed in Figure 2, demonstrating its effectiveness in trait association studies. It is important to note that the Et-GWAS application for windows pc has a limit of handling 30K markers. To accommodate higher marker coverage (5,82,721 SNPs), we recommend launching the application locally by running the code in RStudio. It only requires one package before running the application;
+## Step 1: Installation
+```
+install.packages("shiny")
+```
+Remaining packages will be installed along with when running the application. Hence, the user needs to make sure they are connected with internet when they run the application for the first time.
+## Step 2: Downloading and running the application
 ```
 shiny::runGitHub("Et-GWAS", "IRRI-South-Asia-Hub")
 ```
