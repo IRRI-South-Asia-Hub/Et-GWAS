@@ -1,3 +1,16 @@
+packages = c("shiny","shinyjs","shinythemes","crayon",
+             "ggplot2","ggridges","dplyr","ggfortify",
+             "ggpubr","extrafont","data.table","CMplot",
+             "foreach","doParallel","MASS","zip","tidyr",
+             "plyr","tidyverse","haplotypes","agricolae",
+             "readxl","RColorBrewer")
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE)
+    library(x, character.only = TRUE)
+  }
+})
+
 library(shiny)
 library(shinyjs)
 library(shinythemes)
@@ -23,7 +36,6 @@ library(readxl)
 library(RColorBrewer)
 
 
-#setwd("/srv/shiny-server/pooled-GWAS/")
 source("scirpts/theme_Publication.R")
 source("scirpts/association_main.R")
 #source("scirpts/haplo_pheno.R")
