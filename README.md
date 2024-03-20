@@ -31,7 +31,7 @@ The application requires few more r packages to be installed and they have all b
 The Et-GWAS windows version is present in the GitHub as a separate repository. And it can be downloaded and run through the following command
 
 ```
-shiny::runGitHub("Et-GWAS_Windows", "IRRISouthAsiaHub")
+shiny::runGitHub("Et-GWAS_Windows", "IRRI-South-Asia-Hub")
 ```
 
 # Graphical user interphase and stand-alone package of Et-GWAS 
